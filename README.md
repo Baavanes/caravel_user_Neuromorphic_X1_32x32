@@ -28,7 +28,7 @@ pip install cf-ipm
 ipm install Neuromorphic_X1_32x32
 ```
 
-5. **Harden the User Project Wrapper:**
+5. **Harden the User Project Wrapper using librelane/openlane2:**
 
 ```
 make user_project_wrapper
