@@ -42,62 +42,64 @@ module user_project_wrapper #(
 );
 
     // ------------------------------------------------------------
-    // Wishbone address map for two slaves (4 KB windows each)
+    // Default IO states
     // ------------------------------------------------------------
-    localparam [31:0] MPRJ0_BASE = 32'h0000_0000;
-    localparam [31:0] MPRJ1_BASE = 32'h0000_1000;
-    localparam [31:0] MPRJ_MASK  = 32'hFFFF_F000; // 4KB region
+    //assign io_out = {`MPRJ_IO_PADS{1'b0}};
+    //assign io_oeb = {`MPRJ_IO_PADS{1'b1}};
+    //assign la_data_out = 128'b0;
+    //assign user_irq = 3'b000;
 
-    wire sel_mprj0 = ((wbs_adr_i & MPRJ_MASK) == MPRJ0_BASE);
-    wire sel_mprj1 = ((wbs_adr_i & MPRJ_MASK) == MPRJ1_BASE);
+    // // ------------------------------------------------------------
+    // // Wishbone address decode
+    // // ------------------------------------------------------------
+    // localparam [31:0] MPRJ0_BASE = 32'h0000_0000;
+    // localparam [31:0] MPRJ1_BASE = 32'h0000_1000;
+    // localparam [31:0] MPRJ_MASK  = 32'hFFFF_F000; // 4KB region
 
-    // Gate cyc/stb so only the selected slave is active
-    wire wbs_cyc_i_0 = wbs_cyc_i & sel_mprj0;
-    wire wbs_stb_i_0 = wbs_stb_i & sel_mprj0;
+    // wire sel_mprj0 = ((wbs_adr_i & MPRJ_MASK) == MPRJ0_BASE);
+    // wire sel_mprj1 = ((wbs_adr_i & MPRJ_MASK) == MPRJ1_BASE);
 
-    wire wbs_cyc_i_1 = wbs_cyc_i & sel_mprj1;
-    wire wbs_stb_i_1 = wbs_stb_i & sel_mprj1;
+    // wire wbs_cyc_i_0 = wbs_cyc_i & sel_mprj0;
+    // wire wbs_stb_i_0 = wbs_stb_i & sel_mprj0;
+    // wire wbs_cyc_i_1 = wbs_cyc_i & sel_mprj1;
+    // wire wbs_stb_i_1 = wbs_stb_i & sel_mprj1;
 
-    // Return paths from each slave
-    wire        wbs_ack_o_0, wbs_ack_o_1;
-    wire [31:0] wbs_dat_o_0, wbs_dat_o_1;
+    // wire        wbs_ack_o_0, wbs_ack_o_1;
+    // wire [31:0] wbs_dat_o_0, wbs_dat_o_1;
+
+    // Internal scan signals
+    //wire scan_out_cc_0;
+    //wire scan_out_cc_1;
 
     // ------------------------------------------------------------
-    // Instance 0 (mprj0)
+    // Instance 0
     // ------------------------------------------------------------
-    Neuromorphic_X1_wb mprj0 (
+    Neuromorphic_X1_wb mprj (
     `ifdef USE_POWER_PINS
         .VDDC (vccd1),
         .VDDA (vdda1),
         .VSS  (vssd1),
     `endif
-
-        // Clocks / resets
         .user_clk (wb_clk_i),
         .user_rst (wb_rst_i),
         .wb_clk_i (wb_clk_i),
         .wb_rst_i (wb_rst_i),
 
-        // Wishbone (gated)
-        .wbs_stb_i (wbs_stb_i_0),
-        .wbs_cyc_i (wbs_cyc_i_0),
+        .wbs_stb_i (wbs_stb_i),
+        .wbs_cyc_i (wbs_cyc_i),
         .wbs_we_i  (wbs_we_i),
         .wbs_sel_i (wbs_sel_i),
         .wbs_dat_i (wbs_dat_i),
         .wbs_adr_i (wbs_adr_i),
-        .wbs_dat_o (wbs_dat_o_0),
-        .wbs_ack_o (wbs_ack_o_0),
+        .wbs_dat_o (wbs_dat_o),
+        .wbs_ack_o (wbs_ack_o),
 
-  // Scan/Test
-  .ScanInCC  (io_in[4]),
-  .ScanInDL  (io_in[1]),
-  .ScanInDR  (io_in[2]),
-  .TM        (io_in[5]),
-  .ScanOutCC (io_out[0]),
+        .ScanInCC  (io_in[4]),
+        .ScanInDL  (io_in[1]),
+        .ScanInDR  (io_in[2]),
+        .TM        (io_in[5]),
+        .ScanOutCC (io_out[0]),
 
-        // Analog / bias pins
-        // NOTE: Currently shared with instance 1. If you need distinct biasing,
-        //       assign a different analog_io range to mprj1 below.
         .Iref          (analog_io[0]),
         .Vcc_read      (analog_io[1]),
         .Vcomp         (analog_io[2]),
@@ -112,41 +114,35 @@ module user_project_wrapper #(
         .Vcc_Body      (analog_io[11])
     );
 
-    // ------------------------------------------------------------
-    // Instance 1 (mprj1)
-    // ------------------------------------------------------------
+    // // ------------------------------------------------------------
+    // // Instance 1
+    // // ------------------------------------------------------------
     Neuromorphic_X1_wb mprj1 (
     `ifdef USE_POWER_PINS
         .VDDC (vccd1),
         .VDDA (vdda1),
         .VSS  (vssd1),
     `endif
-
-        // Clocks / resets
         .user_clk (wb_clk_i),
         .user_rst (wb_rst_i),
         .wb_clk_i (wb_clk_i),
         .wb_rst_i (wb_rst_i),
 
-        // Wishbone (gated)
-        .wbs_stb_i (wbs_stb_i_1),
-        .wbs_cyc_i (wbs_cyc_i_1),
+        .wbs_stb_i (wbs_stb_i),
+        .wbs_cyc_i (wbs_cyc_i),
         .wbs_we_i  (wbs_we_i),
         .wbs_sel_i (wbs_sel_i),
         .wbs_dat_i (wbs_dat_i),
         .wbs_adr_i (wbs_adr_i),
-        .wbs_dat_o (wbs_dat_o_1),
-        .wbs_ack_o (wbs_ack_o_1),
+        .wbs_dat_o (wbs_dat_o),
+        .wbs_ack_o (wbs_ack_o),
 
-  // Scan/Test
-  .ScanInCC  (io_in[4]),
-  .ScanInDL  (io_in[1]),
-  .ScanInDR  (io_in[2]),
-  .TM        (io_in[5]),
-  .ScanOutCC (io_out[0]),
+        .ScanInCC  (io_in[4]),
+        .ScanInDL  (io_in[1]),
+        .ScanInDR  (io_in[2]),
+        .TM        (io_in[5]),
+        .ScanOutCC (io_out[1]),
 
-        // Analog / bias pins
-        // To give mprj1 its own bias pins, change the indices below.
         .Iref          (analog_io[0]),
         .Vcc_read      (analog_io[1]),
         .Vcomp         (analog_io[2]),
@@ -161,21 +157,6 @@ module user_project_wrapper #(
         .Vcc_Body      (analog_io[11])
     );
 
-    // ------------------------------------------------------------
-    // Wishbone mux (selected slave drives the return bus)
-    // ------------------------------------------------------------
-    assign wbs_ack_o = (sel_mprj0 ? wbs_ack_o_0 : 1'b0)
-                     | (sel_mprj1 ? wbs_ack_o_1 : 1'b0);
-
-    assign wbs_dat_o = sel_mprj0 ? wbs_dat_o_0 :
-                       sel_mprj1 ? wbs_dat_o_1 :
-                       32'h0000_0000;
-
-    // Tie off unused outputs to avoid lints (customize as needed)
-    assign la_data_out = 128'b0;
-    assign io_out      = {`MPRJ_IO_PADS{1'b0}};
-    assign io_oeb      = {`MPRJ_IO_PADS{1'b1}};
-    assign user_irq    = 3'b000;
 
 endmodule
 `default_nettype wire
