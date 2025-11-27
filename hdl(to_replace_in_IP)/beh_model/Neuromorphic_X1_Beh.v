@@ -56,7 +56,7 @@ module Neuromorphic_X1_wb (
   input         dc_bias
 );
 
-  parameter [31:0] ADDR_MATCH = 32'h3000_000C;
+  parameter [31:0] ADDR_MATCH = 32'h3000_0000;
 	
 	// --------------------------------------------------------------------------
   // Internal wires connecting the shim to the behavioral core
