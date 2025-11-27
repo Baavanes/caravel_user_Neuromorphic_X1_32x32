@@ -17,7 +17,7 @@ This project demonstrates the straightforward integration of a commercial Neurom
 1. **Clone the Repository:**
 
 ```
-git clone https://github.com/BMsemi/caravel_user_Neuromorphic_X1_32x32.git
+git clone https://github.com/Baavanes/caravel_user_Neuromorphic_X1_32x32.git
 ```
 2. **Prepare Your Environment:**
 
