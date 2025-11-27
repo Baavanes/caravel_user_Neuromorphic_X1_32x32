@@ -28,7 +28,7 @@ if {![catch {ord::get_db_block}]} {
 set_voltage_domain -name CORE -power $::env(VDD_NET) -ground $::env(GND_NET) \
   -secondary_power $secondary
 
-# 4) Core PDN grid & ring (met4/met5); keep ring INSIDE die (8 Âµm)
+# 4) Core PDN grid & ring (met4/met5); keep ring INSIDE die (8 ÃÂÃÂµm)
 define_pdn_grid -name core -starts_with POWER -voltage_domain CORE
 
 # Older PDNGen accepts 2 numbers for -core_offset (horz vert). If yours

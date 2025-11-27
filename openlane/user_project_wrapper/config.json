@@ -13,7 +13,7 @@
 
   "PNR_SDC_FILE": "dir::signoff.sdc",
 
-  "//": "Hardening strategy variables (1-Macro-First Hardening)",
+  "//": "Macro-first Hardening",
   "SYNTH_ELABORATE_ONLY": true,
   "RUN_POST_GPL_DESIGN_REPAIR": false,
   "RUN_POST_CTS_RESIZER_TIMING": false,
@@ -26,34 +26,44 @@
   "RUN_IRDROP_REPORT": false,
   "ERROR_ON_SYNTH_CHECKS": false,
 
-  "//": "Use custom PDN (compat script: set_voltage_domain + pdngen; no PDN_* envs)",
+  "//": "Allow GR to continue for debug",
+  "GRT_ALLOW_CONGESTION": true,
+  "GRT_OVERFLOW_ITERS": 300,
+  "PL_TARGET_DENSITY_PCT": 20,
+
+  "//": "Custom PDN",
   "FP_PDN_CFG": "dir::pdn_override_2.tcl",
 
-  "//": "Fail the run if power is geometrically open",
   "ERROR_ON_PDN_VIOLATIONS": true,
   "IGNORE_DISCONNECTED_MODULES": ["user_project_wrapper"],
-
   "VERILOG_POWER_DEFINE": "USE_POWER_PINS",
 
-  "//": "Macros configurations",
+  "//": "Macro configuration",
   "MACROS": {
     "Neuromorphic_X1_wb": {
       "gds": ["dir::../../gds/Neuromorphic_X1_wb.gds"],
       "lef": ["dir::../../lef/Neuromorphic_X1_wb.lef"],
+      "lib": { "*": "dir::../../lib/Neuromorphic_X1_wb.lib" },
       "instances": {
-        "mprj": { "location": [515.18, 514.24], "orientation": "N" }
-      },
-      "lib": { "*": "dir::../../lib/Neuromorphic_X1_wb.lib" }
+        "mprj": {
+          "location": [505, 905],
+          "orientation": "N"
+        }
+      }
     }
   },
 
-  "//": "Hook macro power pins to Caravel rails (keep consistent with RTL)",
+  "//": "Macro PDN hookup",
   "PDN_MACRO_CONNECTIONS": [
     "mprj vccd1 vssd1 VDDC VSS",
     "mprj vdda1 vssd1 VDDA VSS"
   ],
 
-  "//": "PDN configurations (straps that land on your met3 pins)",
+  "//": "Macro halo (LibreLane supports only these)",
+  "FP_MACRO_HORIZONTAL_HALO": 40,
+  "FP_MACRO_VERTICAL_HALO": 40,
+
+  "//": "PDN strap config (used inside override TCL)",
   "FP_PDN_VPITCH": 180,
   "FP_PDN_HPITCH": 180,
   "FP_PDN_VOFFSET": 20,
@@ -63,7 +73,7 @@
   "FP_PDN_VSPACING": 15.5,
   "FP_PDN_HSPACING": 15.5,
 
-  "//": "Core ring inside die bounds",
+  "//": "Core ring",
   "FP_PDN_CORE_RING": true,
   "FP_PDN_CORE_RING_VWIDTH": 3.1,
   "FP_PDN_CORE_RING_HWIDTH": 3.1,
@@ -72,7 +82,7 @@
   "FP_PDN_CORE_RING_VSPACING": 1.7,
   "FP_PDN_CORE_RING_HSPACING": 1.7,
 
-  "//": "Magic variables",
+  "//": "Magic",
   "MAGIC_DRC_USE_GDS": true,
   "MAGIC_CAPTURE_ERRORS": false,
   "ERROR_ON_MAGIC_DRC": false,
@@ -80,19 +90,23 @@
   "DRT_THREADS": 1,
   "MAX_TRANSITION_CONSTRAINT": 1.5,
 
-  "//": "Fixed configurations for caravel. You should NOT edit this section",
+  "//": "Caravel floorplan (required)",
   "DESIGN_NAME": "user_project_wrapper",
   "FP_SIZING": "absolute",
+
+  "//": " Must match DIEAREA in DEF / 1000",
   "DIE_AREA": [0, 0, 2920, 3520],
+
   "FP_DEF_TEMPLATE": "dir::fixed_dont_change/user_project_wrapper.def",
 
   "VDD_NETS": ["vccd1", "vdda1"],
   "GND_NETS": ["vssd1"],
 
   "CLOCK_PORT": "wb_clk_i",
-  "SIGNOFF_SDC_FILE": "dir::signoff.sdc",
-  "MAGIC_DEF_LABELS": false,
   "CLOCK_PERIOD": 25,
+  "SIGNOFF_SDC_FILE": "dir::signoff.sdc",
+
+  "MAGIC_DEF_LABELS": false,
   "MAGIC_ZEROIZE_ORIGIN": false,
 
   "meta": { "version": 2 }

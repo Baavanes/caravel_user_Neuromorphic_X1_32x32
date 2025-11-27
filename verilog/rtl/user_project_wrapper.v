@@ -87,7 +87,8 @@ module user_project_wrapper #(
   .Vcc_set       (analog_io[8]),
   .Vcc_reset     (analog_io[9]),
   .Vcc_L         (analog_io[10]),
-  .Vcc_Body      (analog_io[11])
+  .Vcc_Body      (analog_io[11]),
+  .dc_bias       (analog_io[13])
 );
 
 
