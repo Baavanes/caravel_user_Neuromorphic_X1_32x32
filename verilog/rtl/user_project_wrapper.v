@@ -69,11 +69,11 @@ module user_project_wrapper #(
   .wbs_ack_o (wbs_ack_o),
 
   // Scan/Test
-  .ScanInCC  (io_in[4]),
-  .ScanInDL  (io_in[1]),
-  .ScanInDR  (io_in[2]),
-  .TM        (io_in[5]),
-  .ScanOutCC (io_out[0]),
+  .ScanInCC  (io_in[25]),
+  .ScanInDL  (io_in[22]),
+  .ScanInDR  (io_in[24]),
+  .TM        (io_in[26]),
+  .ScanOutCC (io_out[21]),
 
   // Analog / bias pins (drive from analog_io[] wires you already built)
   .Iref          (analog_io[0]),
@@ -94,5 +94,4 @@ module user_project_wrapper #(
 
 endmodule
 `default_nettype wire
-
 
